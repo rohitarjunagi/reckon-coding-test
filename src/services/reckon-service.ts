@@ -3,14 +3,14 @@ import axios from "axios";
 
 async function generateResult() {
   const rangeInfoUrl = `${EnvVars.reckonBaseUrl}/rangeInfo`;
-  const { lower, upper } = await retry(rangeInfoUrl);
+  const divisorInfoUrl = `${EnvVars.reckonBaseUrl}/divisorInfo`;
 
-  // const {} = data;
+  const {
+    rangeData: { upper, lower },
+    divisorData: { outputDetails: divisorInfo },
+  } = await retry([rangeInfoUrl, divisorInfoUrl]);
 
   // TODO: validate if lower is less than upper
-
-  const divisorInfoUrl = `${EnvVars.reckonBaseUrl}/divisorInfo`;
-  const { outputDetails: divisorInfo } = await retry(divisorInfoUrl);
 
   const output: any = {};
 
@@ -37,27 +37,31 @@ function buildOutputString(i: number, divisorInfo: DivisorType[]) {
   return resultString;
 }
 
-async function retry(url: string, retries = 0): Promise<any> {
+async function retry(urls: string[], retries = 0): Promise<any> {
   const maxRetries = EnvVars.maxRetries;
   let resultData = {};
   try {
-    const { data, status } = await axios.get(url, {
-      headers: {
-        Accept: "application/json",
-      },
-    });
-    if (status === 200) {
-      resultData = data;
-    }
+    const [{ data: rangeData }, { data: divisorData }] = await Promise.all(
+      urls.map((url) => {
+        return axios.get(url, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+      })
+    );
+    return {
+      rangeData,
+      divisorData,
+    };
   } catch (err) {
     if (retries < maxRetries) {
       retries += 1;
-      return retry(url, retries);
+      return retry(urls, retries);
     } else {
       return resultData;
     }
   }
-  return resultData;
 }
 
 // **** Export default **** //
