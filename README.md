@@ -24,3 +24,9 @@ Run production build with a different env file.
 
 - Test cases
 - Formatting the api response in the front end
+- Validating and sanitizing the data coming from the external apis before processing
+
+## Assumptions
+
+- The data coming in from the api is always sanitized and are numbers.
+- The external apis are retried for 5 times if there's an error before finally erroring out
