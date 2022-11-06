@@ -6,7 +6,7 @@ This project was created with [express-generator-typescript](https://github.com/
 
 ### `npm run dev`
 
-Run the server in development mode.
+Run the server in development mode. The server is available on http://localhost:9999/
 
 ### `npm run build`
 
