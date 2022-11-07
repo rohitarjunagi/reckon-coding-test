@@ -11,7 +11,8 @@ import HttpStatusCodes from "@src/configurations/HttpStatusCodes";
 import { NodeEnvs } from "@src/declarations/enums";
 import { RouteError } from "@src/declarations/classes";
 
-import reckonService from "./services/reckon-service";
+import reckonNumbersService from "./services/reckon-numbers-service";
+import reckonSubstringsService from "./services/reckon-substrings-service";
 
 // **** Init express **** //
 
@@ -39,7 +40,7 @@ app.use(
     _: Request,
     res: Response,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    next: NextFunction,
+    next: NextFunction
   ) => {
     logger.err(err, true);
     let status = HttpStatusCodes.BAD_REQUEST;
@@ -47,7 +48,7 @@ app.use(
       status = err.status;
     }
     return res.status(status).json({ error: err.message });
-  },
+  }
 );
 
 // **** Serve front-end content **** //
@@ -60,10 +61,15 @@ app.set("views", viewsDir);
 const staticDir = path.join(__dirname, "public");
 app.use(express.static(staticDir));
 
-// // Nav to login pg by default
+// Serve api end points
+
 app.get("/", async (_: Request, res: Response) => {
-  // res.sendFile("login.html", { root: viewsDir });
-  const result = await reckonService.generateResult();
+  const result = await reckonNumbersService.generateResult();
+  res.json(result);
+});
+
+app.get("/api/generateSubstringResults", async (_: Request, res: Response) => {
+  const result = await reckonSubstringsService.generateResult();
   res.json(result);
 });
 
