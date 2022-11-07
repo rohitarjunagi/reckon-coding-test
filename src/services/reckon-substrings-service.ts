@@ -18,7 +18,6 @@ async function generateResult() {
     text: textToSearch,
     result: subTextsPosition,
   };
-  console.log("formattedResult??? ", formattedResult);
   return retryPost(submitResultsUrl, formattedResult);
 }
 

@@ -20,6 +20,14 @@ Run the production build (Must be built first).
 
 Run production build with a different env file.
 
+## Running locally
+
+Endpoint 1: http://localhost:999/
+This gets the result for test 1 (divisible number)
+
+Endpoint 2: http://localhost:999/api/generateSubstringResults
+This generates the result for test 2 (finding index positions of substrings) and posts it to the reckon end point
+
 ## TODOS
 
 - Test cases
